@@ -3,9 +3,9 @@
 
 Group members (3-5) (no Student IDs, only names and github usernames):
 
-1. 
+1. Olly Love - gituser1034
 
-2. 
+2. Chris Atlas - idk
 
 3. 
 
