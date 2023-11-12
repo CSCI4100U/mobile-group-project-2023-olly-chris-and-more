@@ -12,7 +12,11 @@ class Defender extends Character{
   // For the store
   // ie the cow does 5 points of damage
   String description(){
-    return "The $title does ${attack!.damage} damage with a recharge time of ${attack!.rechargeTime}"
+    return "The $title has $health and does ${attack!.damage} damage with a recharge time of ${attack!.rechargeTime}"
         "s covering a range of ${attack!.distance} units!";
+  }
+
+  void increaseHealth(int increase){
+    health = health! + increase;
   }
 }

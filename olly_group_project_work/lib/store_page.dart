@@ -4,6 +4,7 @@ import 'editedDefender.dart';
 import 'store_section.dart';
 import 'editedCharacter.dart';
 import 'attack.dart';
+import 'upgrade.dart';
 
 class StorePage extends StatefulWidget {
   const StorePage({super.key, required this.title});
@@ -32,8 +33,10 @@ class _StorePageState extends State<StorePage> {
                              attack: Attack(damage: 5, rechargeTime: 5, distance: 5));
 
   List<Widget>? defenderSkins;
-  List<Text> storeUpgrades = [Text("+5 Health"), Text("-5 attack recharge time"), Text("+10 damage"),
-                              Text("+3 Attack Distance")];
+  // Here instead have store upgrade with title (the text) and
+  List<Upgrade>? upgrades;
+  // List<Text> storeUpgrades = [const Text("Cow Health +5"), const Text("Cannon -5s recharge speed"), const Text("Farmer damage +10"),
+  //                             const Text("Chicken Attack Distance +3")];
   List<StoreSection>? _sections;
   List<Defender>? defenders;
   StoreSection? defenderSection;
@@ -42,14 +45,28 @@ class _StorePageState extends State<StorePage> {
   @override
   Widget build(BuildContext context) {
     defenders = [cow, sheep, chicken, farmer, cannon];
+    // Maybe don't need defender in here if have upGradeElement which specifies defender?
+    Upgrade cowHealthUpgrade = Upgrade(title: const Text("Cow Health +5"), value: 5, defender: cow, upgradeElement: 0);
+    Upgrade cowDamageUpgrade = Upgrade(title: const Text("Cow +5 Damage"), value: 3,
+                                       defender: cow, upgradeElement: 1);
+    Upgrade sheepRechargeUpgrade = Upgrade(title: const Text("Sheep -5s recharge speed"), value: -5,
+                                           defender: sheep, upgradeElement: 2);
+    Upgrade chickenDamageUpgrade = Upgrade(title: const Text("Chicken damage +10"), value: 10,
+                                           defender: chicken, upgradeElement: 3);
+    Upgrade farmerRangeUpgrade = Upgrade(title: const Text("farmer attack distance +3"), value: 3,
+                                         defender: farmer, upgradeElement: 4);
+    Upgrade cannonRechargeUpgrade = Upgrade(title: const Text("Cannon -5s recharge speed"), value: -5,
+                                            defender: cannon, upgradeElement: 5);
+    upgrades = [cowHealthUpgrade, cowDamageUpgrade, sheepRechargeUpgrade, chickenDamageUpgrade,
+                farmerRangeUpgrade, cannonRechargeUpgrade];
     //defenders =
     // Will need to add stuff for titles
     // Wanna pass defender objects instead of just skin
     defenderSection = StoreSection(sectionHeader: "Defenders", numberOfSquares: 5,
                                    storeItems: defenders);
 
-    upgradeSection = StoreSection(sectionHeader: "Upgrades", numberOfSquares: 4,
-                                  storeItems: storeUpgrades);
+    upgradeSection = StoreSection(sectionHeader: "Upgrades", numberOfSquares: 6,
+                                  storeItems: upgrades);
 
     _sections = [defenderSection!, upgradeSection!];
 
@@ -101,10 +118,9 @@ Widget _storeSectionGrid(int numberOfSquares, List<Object> storeItems){
       itemBuilder: (BuildContext context, int index){
         return GestureDetector(
           onTap: (){
-            // If defender is tapped then show a dialog
-            _dialogIfDefender(context, storeItems[index]);
-            // If an upgrade is tapped want to adjust defender stat, maybe
-            // need a function in defender class for this
+            // If defender is tapped then select and show a dialog,
+            // else apply upgrade and show snackbar
+            _selectDefenderOrApplyUpgrade(context, storeItems[index]);
             print("tapped");
           },
           // To resize image need a stack so I can put another
@@ -115,12 +131,13 @@ Widget _storeSectionGrid(int numberOfSquares, List<Object> storeItems){
                 color: Colors.white
               ),
               Center(
+                // Problem is want to apply different upgrade for each thing
                 child: Container(
                   color: Colors.white,
                   height: 70,
                   width: 80,
                   // Call a function to check type and display accordingly
-                  // indexing over list of defender objects or text objects
+                  // indexing over list of defender objects or upgrade objects
                   child: _buildItem(storeItems[index])
                   )
                 ),
@@ -134,7 +151,7 @@ Widget _storeSectionGrid(int numberOfSquares, List<Object> storeItems){
 // When a defender is tapped a dialog pops up
 // If selected want to apply to game board, add that object to game board
 // At bottom of store have text that says choose 3
-Widget? _dialogIfDefender(BuildContext context, Object item){
+Widget? _selectDefenderOrApplyUpgrade(BuildContext context, Object item){
   if (item is Defender){
     showDialog(context: context,
         builder: (BuildContext context){
@@ -153,15 +170,31 @@ Widget? _dialogIfDefender(BuildContext context, Object item){
           );
         });
   }
+  if (item is Upgrade){
+    item.applyUpgrade();
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Upgrade applied!"),
+          duration: Duration(seconds: 2),
+          action: SnackBarAction(
+            label: 'Close',
+            onPressed: (){
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
+          ),
+        )
+    );
+  }
 }
 
 // If item is a Defender return the image,
 // If its text return text
-Widget _buildItem(Object item){
+Widget? _buildItem(Object item){
   if (item is Defender){
     return item.skin!;
   }
-  else{
-    return item as Text;
+
+  if (item is Upgrade){
+    return item.title!;
   }
 }
