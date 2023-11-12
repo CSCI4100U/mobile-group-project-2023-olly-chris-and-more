@@ -6,11 +6,6 @@ import 'package:flutter/material.dart';
 class StoreSection{
   String? sectionHeader;
   int? numberOfSquares;
-  // Will have a list of character objects to display in defenders section
-  // this also shows up in the upgrade dialog
-  // for now just pngs
-  List<MaterialColor>? colors;
-  // Can make this a list of generic object type and have upgrades here
-  List<Image>? objects;
-  StoreSection({this.sectionHeader, this.numberOfSquares, this.colors, this.objects});
+  List<Object>? storeItems;
+  StoreSection({this.sectionHeader, this.numberOfSquares, this.storeItems});
 }
