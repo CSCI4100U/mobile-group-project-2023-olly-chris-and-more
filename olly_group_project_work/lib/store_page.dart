@@ -5,9 +5,6 @@ import 'store_section.dart';
 import 'editedCharacter.dart';
 import 'attack.dart';
 
-// Need to add dialogs that pop up showing stats of defenders
-// and dialogs showing a menu of which defender to apply upgrade to
-
 class StorePage extends StatefulWidget {
   const StorePage({super.key, required this.title});
 
@@ -35,57 +32,26 @@ class _StorePageState extends State<StorePage> {
                              attack: Attack(damage: 5, rechargeTime: 5, distance: 5));
 
   List<Widget>? defenderSkins;
-  // Might just change to one color down below
-  List<MaterialColor> colors1 =  [Colors.red, Colors.blue, Colors.lightBlue,Colors.amber, Colors.purple];
-  List<MaterialColor> colors2 =  [Colors.red, Colors.blue, Colors.amber, Colors.purple];
   List<Text> storeUpgrades = [Text("+5 Health"), Text("-5 attack recharge time"), Text("+10 damage"),
                               Text("+3 Attack Distance")];
   List<StoreSection>? _sections;
-
-  // List of store sections, each has a header, amount of squares,
-  // colors were placeholders, now has objects which display the images
-  // final List<StoreSection> _sections = [
-  //   StoreSection(sectionHeader: "Defenders", numberOfSquares: 5,
-  //       colors: [Colors.red, Colors.blue, Colors.lightBlue,
-  //         Colors.amber, Colors.purple],
-  //       // Wanna list of the defender skins and to put that here
-  //       storeItems: [Defender(skin: Image.asset("assets/images/singlecow.png", fit: BoxFit.cover),
-  //         locationX: 5, locationY: 5, health: 5, title: "Cow",
-  //         attack: Attack(damage: 5, rechargeTime: 5, distance: 5),
-  //       ).skin!,
-  //       Defender(
-  //           skin: Image.asset("assets/images/singlesheep.png", fit: BoxFit.cover),
-  //               locationX: 5, locationY: 5, health: 5, title: "Sheep",
-  //               attack: Attack(damage: 5, rechargeTime: 5, distance: 5)
-  //       ).skin!,
-  //         Defender(skin: Image.asset("assets/images/singlechicken.png", fit: BoxFit.cover),
-  //             locationX: 5, locationY: 5, health: 5, title: "Chicken",
-  //             attack: Attack(damage: 5, rechargeTime: 5, distance: 5)).skin!,
-  //         Defender(skin: Image.asset("assets/images/farmer.png", fit: BoxFit.cover),
-  //             locationX: 5, locationY: 5, health: 5, title: "Farmer",
-  //             attack: Attack(damage: 5, rechargeTime: 5, distance: 5)).skin!,
-  //         Defender(skin: Image.asset("assets/images/cannon.png", fit: BoxFit.cover),
-  //             locationX: 5, locationY: 5, health: 5, title: "Cannon",
-  //             attack: Attack(damage: 5, rechargeTime: 5, distance: 5)).skin!,
-  //       ]
-  //   ),
-  //   StoreSection(sectionHeader: "Upgrades", numberOfSquares: 4,
-  //       colors: [Colors.red, Colors.blue, Colors.amber, Colors.purple],
-  //   storeItems: [Text("+5 Health"), Text("-5 attack recharge time"), Text("+10 damage"),
-  //   Text("+3 Attack Distance")]),
-  // ];
+  List<Defender>? defenders;
+  StoreSection? defenderSection;
+  StoreSection? upgradeSection;
 
   @override
   Widget build(BuildContext context) {
-    defenderSkins = [cow.skin!, sheep.skin!, chicken.skin!, farmer.skin!, cannon.skin!];
+    defenders = [cow, sheep, chicken, farmer, cannon];
+    //defenders =
     // Will need to add stuff for titles
-    StoreSection defenders = StoreSection(sectionHeader: "Defenders", numberOfSquares: 5,
-    colors: colors1, storeItems: defenderSkins);
+    // Wanna pass defender objects instead of just skin
+    defenderSection = StoreSection(sectionHeader: "Defenders", numberOfSquares: 5,
+                                   storeItems: defenders);
 
-    StoreSection upgrades = StoreSection(sectionHeader: "Upgrades", numberOfSquares: 4,
-        colors: colors2, storeItems: storeUpgrades);
+    upgradeSection = StoreSection(sectionHeader: "Upgrades", numberOfSquares: 4,
+                                  storeItems: storeUpgrades);
 
-    _sections = [defenders, upgrades];
+    _sections = [defenderSection!, upgradeSection!];
 
     // Load font inside build
     final comfortaaFont = FontLoader('Comfortaa');
@@ -108,8 +74,10 @@ class _StorePageState extends State<StorePage> {
                 title: Text(_sections![index].sectionHeader!, style: TextStyle(fontFamily:'Comfortaa', fontSize: 25)),
                 subtitle: Container(
                     height: 250,
+                    // _section![index], if index is 0 then get defenderSection.storeItems
+                    // which is a list of defender objects
                     child: _storeSectionGrid(_sections![index].numberOfSquares!,
-                        _sections![index].colors!, _sections![index].storeItems!)
+                        _sections![index].storeItems!)
                 )
             );
           },
@@ -119,18 +87,9 @@ class _StorePageState extends State<StorePage> {
   }
 }
 
-// Use gesture detector on containers to select items and add the character
-// to the game
-// When you click on grid container function happens
-// When you choose an upgrade dialog will pop up showing the animals
-// you can then apply it to
-
-// Makes a grid for each store section, taking number of items in a section
-// and objects for the grid - right now placeholder is colors
-// returns the grid for the corresponding store section
-// can this even be added to store section class as a function for better design?
-// Maybe make grid squares look 3d and have rounded edges?
-Widget _storeSectionGrid(int numberOfSquares, List<MaterialColor> colors, List<Widget> storeItems){
+// Grid for the store, each grid has an amount of squares with either an image
+// or items in them
+Widget _storeSectionGrid(int numberOfSquares, List<Object> storeItems){
   return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3, // Number of columns
@@ -142,10 +101,14 @@ Widget _storeSectionGrid(int numberOfSquares, List<MaterialColor> colors, List<W
       itemBuilder: (BuildContext context, int index){
         return GestureDetector(
           onTap: (){
+            // If defender is tapped then show a dialog
+            _dialogIfDefender(context, storeItems[index]);
+            // If an upgrade is tapped want to adjust defender stat, maybe
+            // need a function in defender class for this
             print("tapped");
           },
           // To resize image need a stack so I can put another
-            // container on top of the grid view thats resizable, and fit an image in that
+            // container on top of the grid view that's resizable, and fit an image in that
           child: Stack(
             children: [
               Container(
@@ -156,9 +119,9 @@ Widget _storeSectionGrid(int numberOfSquares, List<MaterialColor> colors, List<W
                   color: Colors.white,
                   height: 70,
                   width: 80,
-                  child: storeItems[index]
-                  // child: Image.asset("assets/images/mango.png",
-                  //                     fit: BoxFit.cover
+                  // Call a function to check type and display accordingly
+                  // indexing over list of defender objects or text objects
+                  child: _buildItem(storeItems[index])
                   )
                 ),
             ]
@@ -166,4 +129,39 @@ Widget _storeSectionGrid(int numberOfSquares, List<MaterialColor> colors, List<W
         );
       }
   );
+}
+
+// When a defender is tapped a dialog pops up
+// If selected want to apply to game board, add that object to game board
+// At bottom of store have text that says choose 3
+Widget? _dialogIfDefender(BuildContext context, Object item){
+  if (item is Defender){
+    showDialog(context: context,
+        builder: (BuildContext context){
+          // Wanna return widget function
+          return AlertDialog(
+              title: Text(item.title!),
+              content: Text(item.description()),
+              actions: [
+                TextButton(
+                    onPressed: (){
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Select")
+                )
+              ],
+          );
+        });
+  }
+}
+
+// If item is a Defender return the image,
+// If its text return text
+Widget _buildItem(Object item){
+  if (item is Defender){
+    return item.skin!;
+  }
+  else{
+    return item as Text;
+  }
 }
