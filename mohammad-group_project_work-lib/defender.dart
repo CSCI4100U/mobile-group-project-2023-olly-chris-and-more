@@ -1,68 +1,62 @@
-import 'character.dart';
+import 'dart:math';
 
-class Defender extends Character {
-  Defender({
-    required String skin,
-    required String location,
-    required int health,
-  }) : super(skin: skin, location: location, health: health);
+class Defender {
+  String title;
+  int baseHealth;
+  int currentHealth;
+  int level;
 
-  Future<void> miniAttack(Character target) async {
-    if (!isReloaded) {
-      displaySnackbar("Warning: Not fully reloaded!");
-      return;
-    }
+  // Constructor
+  Defender({required this.title, required this.baseHealth, this.level = 1})
+      : currentHealth = baseHealth;
 
-    // Perform mini attack logic
-    target.health -= 20;
+  // Mini attack method
+  void miniAttack(Defender target) {
+    print('$title performs a mini attack on ${target.title}!');
 
-    isReloaded = false;
-    displaySnackbar("Mini Attack successful! Reloading...");
+    int damage = Random().nextInt(5) + 1; // Random damage between 1 and 5
+    target.currentHealth -= damage;
 
-    // Simulate reloading after a delay
-    await Future.delayed(Duration(seconds: 2));
-    isReloaded = true;
+    print('${target.title} takes $damage damage. ${target.title}\'s health: ${target.currentHealth}');
+
+
   }
 
-  Future<void> megaAttack(Character target) async {
-    if (!isReloaded) {
-      displaySnackbar("Warning: Not fully reloaded!");
-      return;
-    }
+  // Mega attack method
+  void megaAttack(Defender target) {
+    print('$title performs a mega attack on ${target.title}!');
 
-    // Perform mega attack logic
-    target.health -= 50;
+    // Implement mega attack logic here
+    int damage = Random().nextInt(10) + 1; // Random damage between 1 and 10
+    target.currentHealth -= damage;
 
-    isReloaded = false;
-    displaySnackbar("Mega Attack successful! Reloading...");
+    print('${target.title} takes $damage damage. ${target.title}\'s health: ${target.currentHealth}');
 
-    // Simulate reloading after a delay
-    await Future.delayed(Duration(seconds: 3));
-    isReloaded = true;
+    // You can add more logic here based on your game requirements
+  }
+
+
+  void upgrade() {
+    level++;
+    baseHealth += 5; // Increase base health when upgraded
+    currentHealth = baseHealth; // Reset current health to the new base health
+    print('$title has been upgraded to level $level. Health increased to $baseHealth.');
   }
 }
 
-class FarmerWithShotgun extends Defender {
-  FarmerWithShotgun({required String location})
-      : super(skin: "Farmer", location: location, health: 100);
-}
+void main() {
 
-void main() async {
-  var farmer = FarmerWithShotgun(location: "Farm");
-  var chicken = Chicken(location: "Farm");
-  var enemy = Enemy(location: "Forest");
+  Defender chicken = Defender(title: "Chicken", baseHealth: 5);
+  Defender sheep = Defender(title: "Sheep", baseHealth: 8);
 
-  farmer.displayInfo();
-  chicken.displayInfo();
-  enemy.displayInfo();
+  // Chicken performs attacks
+  chicken.miniAttack(sheep);
+  chicken.megaAttack(sheep);
 
-  await farmer.miniAttack(enemy);
+  // Upgrade the chicken
+  chicken.upgrade();
 
-  farmer.displayInfo();
-  enemy.displayInfo();
-
-  await farmer.megaAttack(enemy);
-
-  farmer.displayInfo();
-  enemy.displayInfo();
+  // Chicken performs upgraded attacks
+  chicken.miniAttack(sheep);
+  chicken.megaAttack(sheep);
 }

@@ -1,85 +1,58 @@
-import 'character.dart';
-import 'character.dart';
-import 'enimies.dart';
+import 'dart:math';
 
-class Boss extends enimies {
-  Boss({required String location, required String path})
-      : super(skin: "Boss", location: location, health: 200, path: path);
+import 'defender.dart';
 
-  Future<void> shortAttack(Character target) async {
-    ShortRangeEnemy({required String location, required String path}, location: '', path: '')
-    : super(skin: "Short Range Enemy", location: location, health: 50, path: path);
+// Base class for all enemies
+class Enemy {
+  String title;
+  int baseHealth;
+  int currentHealth;
+
+  // Constructor
+  Enemy({required this.title, required this.baseHealth})
+      : currentHealth = baseHealth;
+
+  // Method for basic attack
+  void basicAttack(Defender target) {
+    print('$title performs a basic attack on ${target.title}!');
+    int damage = Random().nextInt(5) + 1; // Random damage between 1 and 5
+    target.currentHealth -= damage;
+    print('${target.title} takes $damage damage. ${target.title}\'s health: ${target.currentHealth}');
+  }
+}
+
+// Boss class, inherits from Enemy
+class Boss extends Enemy {
+  // Constructor
+  Boss({required String title, required int baseHealth})
+      : super(title: title, baseHealth: baseHealth);
+
+  // Short attack method
+  void shortAttack(Defender target) {
+    print('$title performs a short-range attack on ${target.title}!');
+    int damage = Random().nextInt(10) + 1; // Random damage between 1 and 10
+    target.currentHealth -= damage;
+    print('${target.title} takes $damage damage. ${target.title}\'s health: ${target.currentHealth}');
   }
 
-  Future<void> longAttack(Character target) async {
-    // Implement long-range attack logic for the boss
-    // ...
+  // Long attack method
+  void longAttack(Defender target) {
+    print('$title performs a long-range attack on ${target.title}!');
+    int damage = Random().nextInt(15) + 1; // Random damage between 1 and 15
+    target.currentHealth -= damage;
+    print('${target.title} takes $damage damage. ${target.title}\'s health: ${target.currentHealth}');
   }
 }
 
-class enimies {
-}
+void main() {
+  // Example usage
+  Defender player = Defender(title: "Player", baseHealth: 100);
+  Boss evilBoss = Boss(title: "Evil Boss", baseHealth: 150);
 
-class Round {
-  List<Defender> defenders;
-  List<Enemy> enemies;
-  int length;
-
-  Round({
-    required this.defenders,
-    required this.enemies,
-    required this.length,
-  });
-}
-
-class Game {
-  List<Round> rounds;
-  String season;
-  int timeToUsePickers;
-
-  Game({
-    required this.rounds,
-    required this.season,
-    required this.timeToUsePickers,
-  });
-}
-
-void main() async {
-  // Example usage of the classes
-  var shortRangeEnemy = ShortRangeEnemy(location: "Forest", path: "Left");
-  var longRangeEnemy = LongRangeEnemy(location: "Mountain", path: "Right");
-  var bossEnemy = Boss(location: "Cave", path: "Center");
-
-  var farmer = FarmerWithShotgun(location: "Farm");
-  var chicken = Chicken(location: "Farm");
-  var mortar = Mortar(location: "Hill");
-
-  var defenders = [farmer, chicken, mortar];
-  var enemies = [shortRangeEnemy, longRangeEnemy, bossEnemy];
-
-  var round1 = Round(defenders: defenders, enemies: [shortRangeEnemy], length: 60);
-  var round2 = Round(defenders: defenders, enemies: [longRangeEnemy, shortRangeEnemy], length: 90);
-  var round3 = Round(defenders: defenders, enemies: [bossEnemy], length: 120);
-
-  var game = Game(rounds: [round1, round2, round3], season: "Winter", timeToUsePickers: 180);
-
-  for (var round in game.rounds) {
-    print("Starting Round!");
-
-    // Logic for each round
-    for (var enemy in round.enemies) {
-      print("Enemy approaching from ${enemy.path}");
-
-      // Interaction between defenders and enemies
-      for (var defender in round.defenders) {
-        await defender.miniAttack(enemy);
-      }
-    }
-
-    // Additional round-specific logic
-
-    print("Round Complete!");
-  }
-
-  print("Game Over! Season: ${game.season}");
+  // Player and boss interactions
+  player.miniAttack(evilBoss as Defender);
+  evilBoss.basicAttack(player);
+  evilBoss.shortAttack(player);
+  player.megaAttack(evilBoss as Defender);
+  evilBoss.longAttack(player);
 }
