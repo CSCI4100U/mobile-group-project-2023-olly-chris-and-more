@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -31,6 +32,7 @@ class _MovingDotState extends State<MovingDot> with SingleTickerProviderStateMix
   final double leftMove100 = 100.0; 
   final double downMove200 = 200.0;
   bool isAnimating = false;
+  bool isWave1Started = false;
 
   @override
   void initState() {
@@ -89,6 +91,14 @@ class _MovingDotState extends State<MovingDot> with SingleTickerProviderStateMix
       });
 
       controller.forward();
+
+      //Wave message
+      isWave1Started = true;
+      Timer(Duration(seconds: 2), () {
+        setState(() {
+          isWave1Started = false;
+        });
+      });
     }
   }
 
@@ -125,6 +135,13 @@ class _MovingDotState extends State<MovingDot> with SingleTickerProviderStateMix
               child: Text('Wave Start'),
             ),
           ),
+          if (isWave1Started)
+            Center(
+              child: Text(
+                'Wave 1 has Started',
+                style: TextStyle(fontSize: 24, color: Colors.black),
+              ),
+            ),
         ],
       ),
     );
