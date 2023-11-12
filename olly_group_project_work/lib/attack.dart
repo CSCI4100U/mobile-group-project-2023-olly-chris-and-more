@@ -12,8 +12,19 @@ class Attack{
   int? distance;
   Attack({this.damage, this.rechargeTime, this.distance});
 
-  // Or have a function in enemy where you pass in defender damage done
-  // do defender damage - health, return that value and update the enemies health
+  // set setDamage(int value){
+  //   damage = value;
+  // }
+
+  void increaseDamage(int increase){
+    damage = damage! + increase;
+  }
+  void decreaseRechargeTime(int increase){
+    rechargeTime = rechargeTime! + increase;
+  }
+  void increaseDistance(int increase){
+    distance = distance! + increase;
+  }
 
   // Wanna pass in enemy location and defender, if difference is greater then distance
   // then no attack done, return true if distance close and therefore attack valid
