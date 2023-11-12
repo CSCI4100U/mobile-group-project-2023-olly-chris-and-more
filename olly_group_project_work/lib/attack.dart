@@ -10,6 +10,7 @@ class Attack{
   // So distance is like a square shape of 10 everywhere where the attack can
   // take effect
   int? distance;
+  Attack({this.damage, this.rechargeTime, this.distance});
 
   // Or have a function in enemy where you pass in defender damage done
   // do defender damage - health, return that value and update the enemies health

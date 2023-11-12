@@ -25,7 +25,6 @@ class LoginPage extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            // This causing issue cuz no image
             image: AssetImage(''), // Replace with the actual image path
             fit: BoxFit.cover, // You can adjust this to 'fill', 'contain', or other values
           ),

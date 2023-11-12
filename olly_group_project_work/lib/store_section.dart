@@ -10,7 +10,11 @@ class StoreSection{
   // this also shows up in the upgrade dialog
   // for now just pngs
   List<MaterialColor>? colors;
+  // A list of titles
+  // Worry about this a bit later
+  //List<Text>? titles;
   // Can make this a list of generic object type and have upgrades here
-  List<Image>? objects;
-  StoreSection({this.sectionHeader, this.numberOfSquares, this.colors, this.objects});
+  List<Widget>? storeItems;
+  //List<Image>? objects;
+  StoreSection({this.sectionHeader, this.numberOfSquares, this.colors, this.storeItems});
 }
