@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'editedDefender.dart';
 import 'store_section.dart';
-import 'editedCharacter.dart';
 import 'attack.dart';
 import 'upgrade.dart';
 
