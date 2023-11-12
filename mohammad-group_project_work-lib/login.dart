@@ -1,145 +1,141 @@
 import 'package:flutter/material.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
 
-class LoginPage extends StatelessWidget {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  get nameController => null;
-
-  Future<void> _handleLogin() async {
-    String email = emailController.text;
-    String password = passwordController.text;
-
-    // Call the handleLogin function with email and password
-    // You can implement this function as mentioned earlier
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // Build the login UI here
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(''),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(''), // Replace with the actual image path
-            fit: BoxFit.cover, // You can adjust this to 'fill', 'contain', or other values
-          ),
-        ),
-
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            TextFormField(
-              controller: nameController,
-              decoration: InputDecoration(labelText: 'User-Name'),
-            ),
-
-            TextFormField(
-              controller: passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-
-              obscureText: true,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _handleSignup(); // Call the signup function
-              },
-              child: Text('Login'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+void main() {
+  runApp(MyApp());
 }
-
-class _handleSignup {
-}
-
-class SignupPage extends StatelessWidget {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  Future<void> _handleSignup() async {
-    String name = nameController.text;
-    String email = emailController.text;
-    String password = passwordController.text;
-
-    // Call the handleSignup function with name, email, and password
-    // You can implement this function as mentioned earlier
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(''),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            TextFormField(
-              controller: nameController,
-              decoration: InputDecoration(labelText: 'User-Name'),
-            ),
-            TextFormField(
-              controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            TextFormField(
-              controller: passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _handleSignup(); // Call the signup function
-              },
-              child: Text('Sign Up'),
-            ),
-          ],
-        ),
-      ),
-    );
-    // Build the signup UI here
-  }
-}
-
-void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('Barnyard Defenders'),
-            bottom: TabBar(
-              tabs: [
-                Tab(text: 'Login'),
-                Tab(text: 'Signup'),
-              ],
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LoginScreen(),
+        '/createAccount': (context) => CreateAccountScreen(),
+      },
+    );
+  }
+}
+
+class LoginScreen extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  void _handleLogin(BuildContext context) {
+    // Implement your login logic here
+    print('Login button pressed');
+
+    // For simplicity, let's just navigate to a dummy home page
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Barnyard Defender'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'Email'),
             ),
-          ),
-          body: TabBarView(
-            children: [
-              LoginPage(),
-              SignupPage(),
-            ],
-          ),
+            SizedBox(height: 16.0),
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Password'),
+            ),
+            SizedBox(height: 24.0),
+            ElevatedButton(
+              onPressed: () => _handleLogin(context),
+              child: Text('Login'),
+            ),
+            SizedBox(height: 16.0),
+            TextButton(
+              onPressed: () {
+                // Navigate to the create account screen
+                Navigator.pushNamed(context, '/createAccount');
+              },
+              child: Text('Create Account'),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+}
+
+class CreateAccountScreen extends StatelessWidget {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  void _handleCreateAccount(BuildContext context) {
+    // Implement your account creation logic here
+    print('Create Account button pressed');
+
+    // Simulating successful signup
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Account created successfully!'),
+      duration: Duration(seconds: 2),
+    ));
+
+    // Navigate back to the login page
+    Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Create Account'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(labelText: 'Name'),
+            ),
+            SizedBox(height: 16.0),
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'Email'),
+            ),
+            SizedBox(height: 16.0),
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Password'),
+            ),
+            SizedBox(height: 24.0),
+            ElevatedButton(
+              onPressed: () => _handleCreateAccount(context),
+              child: Text('Create Account'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home'),
+      ),
+      body: Center(
+        child: Text('Welcome to the Home Screen!'),
       ),
     );
   }
