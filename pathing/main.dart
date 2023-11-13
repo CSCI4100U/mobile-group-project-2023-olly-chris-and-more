@@ -23,8 +23,11 @@ class _MovingDotState extends State<MovingDot> with SingleTickerProviderStateMix
   double dotPositionX = -40.0; // Initial X position
   double dotPositionY = 0.0; // Initial Y position
   final double dotSize = 30.0;
+  
+  // ChatGPT Assisted
   final double screenWidth = MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size.width;
   final double screenHeight = MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size.height;
+  
   final double rightMove100 = 100.0;
   final double downMove100 = 100.0;
   final double rightMove200 = 200.0;
