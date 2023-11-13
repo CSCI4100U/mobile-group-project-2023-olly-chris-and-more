@@ -1,93 +1,90 @@
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:olly_group_project_work/attack.dart';
+import 'dart:math';
 
 class Character {
-  late String skin;
-  late String location;
-  late int health;
-  late bool isReloaded;
+  String name;
+  String skin;
+  String location;
+  int health;
+  int maxHealth;
 
+  // Constructor
   Character({
+    required this.name,
     required this.skin,
     required this.location,
     required this.health,
-  }) : isReloaded = true;
+  }) : maxHealth = health;
 
-  // Might be something that the game should have, the game is what displays the character
-  // given the characters location ints and its image?
+  // Display information about the character
   void displayInfo() {
-    print("Skin: $skin, Location: $location, Health: $health");
+    print('$name\'s skin: $skin, location: $location, health: $health/$maxHealth');
   }
 
-  Future<void> attack(Character target) async {
-    if (!isReloaded) {
-      displaySnackbar("Warning: Not fully reloaded!");
-      return;
+  // Attack method
+  void attack(Character target) {
+    if (isReadyToAttack()) {
+      print('$name performs an attack on ${target.name}!');
+      int damage = Random().nextInt(10) + 1; // Random damage between 1 and 10
+      target.receiveDamage(damage);
+      print('${target.name} takes $damage damage. ${target.name}\'s health: ${target.health}/${target.maxHealth}');
+    } else {
+      showWarningSnackbar();
     }
-
-    // Perform attack logic, e.g., decrease target's health
-    target.health -= 10;
-
-    isReloaded = false;
-    displaySnackbar("Attack successful! Reloading...");
-
-    // Simulate reloading after a delay
-    await Future.delayed(Duration(seconds: 2));
-    isReloaded = true;
   }
 
-  void displaySnackbar(String message) {
-    print("Snackbar: $message");
+  // Receive damage method
+  void receiveDamage(int damage) {
+    health -= damage;
+    if (health < 0) {
+      health = 0;
+    }
+  }
+
+  // Check if the character is ready to attack
+  bool isReadyToAttack() {
+    // Example: Character is ready to attack if health is above a certain threshold
+    return health > maxHealth * 0.2;
+  }
+
+  // Display a warning snackbar
+  void showWarningSnackbar() {
+    print('$name: Warning! Not fully reloaded. Ready to use next attack after reloading.');
+    // Add logic for displaying a snackbar in a Flutter app
+  }
+
+  // Display a character description dialog
+  void showCharacterDescriptionDialog() {
+    print('Dialog: $name - $location\n$skin\nDescription: Add your character description here.');
+    // Add logic for displaying a dialog in a Flutter app
   }
 }
 
-// Shouldn't be a seperate class, rather an instance of a class
-class FarmerWithShotgun extends Character {
-  FarmerWithShotgun({required String location})
-      : super(skin: "Farmer", location: location, health: 100);
-}
+void main() {
+  // Example usage
+  Character chicken = Character(name: "Chicken", skin: "Feathers", location: "Farm", health: 20);
+  Character sheep = Character(name: "Sheep", skin: "Wool", location: "Meadow", health: 25);
+  Character cow = Character(name: "Cow", skin: "Hide", location: "Pasture", health: 30);
+  Character mortar = Character(name: "Mortar", skin: "Metal", location: "Battlefield", health: 50);
+  Character farmerWithShotgun = Character(name: "Farmer with Shotgun", skin: "Human", location: "Farm", health: 40);
 
-class Chicken extends Character {
-  Chicken({required String location})
-      : super(skin: "Chicken", location: location, health: 20);
-}
-
-class Sheep extends Character {
-  Sheep({required String location})
-      : super(skin: "Sheep", location: location, health: 30);
-}
-
-class Cow extends Character {
-  Cow({required String location})
-      : super(skin: "Cow", location: location, health: 50);
-}
-
-class Mortar extends Character {
-  Mortar({required String location})
-      : super(skin: "Mortar", location: location, health: 80);
-}
-
-class Enemy extends Character {
-  Enemy({required String location})
-      : super(skin: "Enemy", location: location, health: 50);
-}
-
-class Boss extends Character {
-  Boss({required String location})
-      : super(skin: "Boss", location: location, health: 200);
-}
-void main() async {
-  var farmer = FarmerWithShotgun(location: "Farm");
-  var chicken = Chicken(location: "Farm");
-  var enemy = Enemy(location: "Forest");
-
-  farmer.displayInfo();
+  // Display character information
   chicken.displayInfo();
-  enemy.displayInfo();
+  sheep.displayInfo();
+  cow.displayInfo();
+  mortar.displayInfo();
+  farmerWithShotgun.displayInfo();
 
-  await farmer.attack(enemy);
+  // Perform attacks
+  chicken.attack(sheep);
+  sheep.attack(cow);
+  cow.attack(mortar);
+  mortar.attack(farmerWithShotgun);
+  farmerWithShotgun.attack(chicken);
 
-  farmer.displayInfo();
-  enemy.displayInfo();
+  // Display character descriptions
+  chicken.showCharacterDescriptionDialog();
+  sheep.showCharacterDescriptionDialog();
+  cow.showCharacterDescriptionDialog();
+  mortar.showCharacterDescriptionDialog();
+  farmerWithShotgun.showCharacterDescriptionDialog();
 }

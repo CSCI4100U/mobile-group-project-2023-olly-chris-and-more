@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'attack.dart';
 
-// Changed: doesn't have attack but defenders which inherit this do
+// Olly + Mohammad
+
+// In game there are enemies and defenders, they are both characters
+
 class Character{
   Image? skin;
   // Corrdinates may need to be different

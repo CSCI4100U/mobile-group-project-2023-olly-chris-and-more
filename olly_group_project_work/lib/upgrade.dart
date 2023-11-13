@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'editedDefender.dart';
 
-// Can have associated defender, then apply upgrade to associated defender
-// Also need associated thing to upgrade
+// Olly
+
+// Characters can have upgrades giving them more power
 class Upgrade{
   Text? title;
   int? value;
