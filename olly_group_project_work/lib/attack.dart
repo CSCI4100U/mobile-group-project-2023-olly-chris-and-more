@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+// Created by Olly
+
 class Attack{
   int? damage;
   // Attacks take certain amount of time to be used
-  // If recharge time not done, then want snackbar
   int? rechargeTime;
   // If distance is 10 enemy must be 10 values away for it to work, x or y,
   // So distance is like a square shape of 10 everywhere where the attack can
   // take effect
   int? distance;
   Attack({this.damage, this.rechargeTime, this.distance});
-
-  // set setDamage(int value){
-  //   damage = value;
-  // }
 
   void increaseDamage(int increase){
     damage = damage! + increase;

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 // void main() {
 //   runApp(MyApp());
@@ -20,6 +21,9 @@ class MovingDot extends StatefulWidget {
 }
 
 class _MovingDotState extends State<MovingDot> with SingleTickerProviderStateMixin {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
   double dotPositionX = -40.0; // Initial X position
   double dotPositionY = 0.0; // Initial Y position
   final double dotSize = 30.0;
@@ -84,6 +88,10 @@ class _MovingDotState extends State<MovingDot> with SingleTickerProviderStateMix
       Timer(Duration(seconds: 4), () {
         setState(() {
           wave1Start = false;
+          // show random upgrade selection cards page
+          _roundUpgrade();
+          // Want notification after each round
+          showNotification();
         });
       });
     }
@@ -132,6 +140,30 @@ class _MovingDotState extends State<MovingDot> with SingleTickerProviderStateMix
             ),
         ],
       ),
+    );
+  }
+
+  Future<void> _roundUpgrade() async{
+    Navigator.pushNamed(context, '/roundUpgrade');
+  }
+
+  Future<void> showNotification() async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+      'notif_after_round',
+      'Notification after round',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      'Round Over',
+      'Round Over!',
+      platformChannelSpecifics,
+      payload: 'The round is over',
     );
   }
 }

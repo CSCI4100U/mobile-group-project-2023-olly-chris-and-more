@@ -3,9 +3,9 @@ import 'dart:convert' show json;
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:math';
 
-void main() {
-  runApp(MyApp());
-}
+// void main() {
+//   runApp(MyApp());
+// }
 
 class CardData {
   final String title;
@@ -14,14 +14,14 @@ class CardData {
   CardData(this.title, this.description);
 }
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MyScreen(),
-    );
-  }
-}
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: MyScreen(),
+//     );
+//   }
+// }
 
 class MyScreen extends StatefulWidget {
   @override
