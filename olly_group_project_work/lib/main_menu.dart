@@ -74,6 +74,7 @@ class _MainMenuState extends State<MainMenu> {
                 ElevatedButton(
                     onPressed: (){
                       print("Playing game");
+                      _game();
                     },
                     child: Text("Start Game"),
                     style: ElevatedButton.styleFrom(
@@ -88,6 +89,7 @@ class _MainMenuState extends State<MainMenu> {
                 ElevatedButton(
                     onPressed: (){
                       print("Going to stats ");
+                      _stats();
                     },
                     child: Text("Stats"),
                     style: ElevatedButton.styleFrom(
@@ -102,6 +104,7 @@ class _MainMenuState extends State<MainMenu> {
                 ElevatedButton(
                     onPressed: (){
                       print("Going to settings");
+                      _settings();
                     },
                     child: Text("Settings"),
                     style: ElevatedButton.styleFrom(
@@ -118,11 +121,21 @@ class _MainMenuState extends State<MainMenu> {
 
   Future<void> _getDefenders() async{
     Navigator.pushNamed(context, '/store');
-    // Stores values I receive from addGrade page
   }
 
   Future<void> _login() async{
     Navigator.pushNamed(context, '/login');
-    // Stores values I receive from addGrade page
+  }
+
+  Future<void> _settings() async{
+    Navigator.pushNamed(context, '/settings');
+  }
+
+  Future<void> _stats() async{
+    Navigator.pushNamed(context, '/stats');
+  }
+
+  Future<void> _game() async{
+    Navigator.pushNamed(context, '/game');
   }
 }
