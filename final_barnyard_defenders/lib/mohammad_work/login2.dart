@@ -19,6 +19,14 @@ class MyApp extends StatelessWidget {
         '/': (context) => LoginPage(),
         '/createAccount': (context) => CreateAccountPage(),
       },
+      builder: (context, child) {
+        return Material(
+          child: Container(
+            color: Colors.black,
+            child: child,
+          ),
+        );
+      },
     );
   }
 }
@@ -51,19 +59,28 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: Text('Login Page'),
       ),
-      body: Padding(
+      body: Container(
+        color: Colors.red,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(
+                labelText: 'Email',
+                fillColor: Colors.white,
+                filled: true,
+              ),
             ),
             SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(
+                labelText: 'Password',
+                fillColor: Colors.white,
+                filled: true,
+              ),
               obscureText: true,
             ),
             SizedBox(height: 32),
@@ -74,7 +91,6 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 16),
             TextButton(
               onPressed: () {
-                // Navigate to the create account screen
                 Navigator.pushNamed(context, '/createAccount');
               },
               child: Text('Create Account'),
@@ -99,7 +115,6 @@ class CreateAccountPage extends StatelessWidget {
       );
       print("Account created: ${userCredential.user?.email}");
 
-      // Navigate back to the home page
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       print("Error: $e");
@@ -112,19 +127,28 @@ class CreateAccountPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Create Account'),
       ),
-      body: Padding(
+      body: Container(
+        color: Colors.red,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(
+                labelText: 'Email',
+                fillColor: Colors.white,
+                filled: true,
+              ),
             ),
             SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(
+                labelText: 'Password',
+                fillColor: Colors.white,
+                filled: true,
+              ),
               obscureText: true,
             ),
             SizedBox(height: 32),
