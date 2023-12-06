@@ -24,6 +24,12 @@ import 'game_page.dart';
 // this round
 // Since we only need dialog or pickers, no pickers, no seasons or night based on those
 
+// Goals - Want to watch the video and work through the spawnpoints
+// then get all the characters that will be used
+// then add label to store telling user they may pick 3 characters and an upgrade
+// then set it up so user can add 3 characters to a list which gets sent to the game
+// might need to look at change notifier stuff for that part
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Flame.device.fullScreen();

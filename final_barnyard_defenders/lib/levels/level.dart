@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
+import 'package:final_barnyard_defenders/actors/defender.dart';
 
 class Level extends World{
   // final String levelName;
@@ -33,8 +34,9 @@ class Level extends World{
     //   }
     // }
 
-    // add player to the level
-    //add(Player(character: 'Ninja Frog'));
+    // add player to the level - change to use spawnpoints, need to find good characters
+    // also change path since chicken not enemy
+    add(Defender(idleGameImage: 'Enemies/Chicken/Idle (32x34).png'));
     return super.onLoad();
   }
 }

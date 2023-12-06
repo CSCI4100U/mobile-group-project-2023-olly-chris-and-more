@@ -76,7 +76,7 @@ flutter:
     - assets/tiles/
     - assets/images/Tilesets/
     - assets/card_data.json
-    #- assets/images/
+    - assets/images/Enemies/Chicken/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
