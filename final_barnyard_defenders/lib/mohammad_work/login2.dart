@@ -1,40 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-// void main() {
-//   runApp(MyApp());
-// }
+import 'firebase_options.dart'; // Make sure to import your Firebase options file
 
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       initialRoute: '/',
-//       routes: {
-//         '/': (context) => LoginScreen(),
-//         '/createAccount': (context) => CreateAccountScreen(),
-//       },
-//     );
-//   }
-// }
 
-class LoginScreen extends StatelessWidget {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
 
-  void _handleLogin(BuildContext context) {
-    // Implement your login logic here
-    print('Login button pressed');
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Firebase Login',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LoginPage(),
+        '/createAccount': (context) => CreateAccountPage(),
+      },
+    );
+  }
+}
 
-    // For simplicity, let's just navigate to a dummy home page
-    // We start at main menu so once logged in just go back to main menu
-    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _signIn() async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      print("Signed in: ${userCredential.user?.email}");
+    } on FirebaseAuthException catch (e) {
+      print("Error: $e");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Barnyard Defender'),
+        title: Text('Login Page'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -42,21 +57,21 @@ class LoginScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: emailController,
+              controller: _emailController,
               decoration: InputDecoration(labelText: 'Email'),
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 16),
             TextField(
-              controller: passwordController,
-              obscureText: true,
+              controller: _passwordController,
               decoration: InputDecoration(labelText: 'Password'),
+              obscureText: true,
             ),
-            SizedBox(height: 24.0),
+            SizedBox(height: 32),
             ElevatedButton(
-              onPressed: () => _handleLogin(context),
-              child: Text('Login'),
+              onPressed: _signIn,
+              child: Text('Sign In'),
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 16),
             TextButton(
               onPressed: () {
                 // Navigate to the create account screen
@@ -71,23 +86,24 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-class CreateAccountScreen extends StatelessWidget {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+class CreateAccountPage extends StatelessWidget {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  void _handleCreateAccount(BuildContext context) {
-    // Implement your account creation logic here
-    print('Create Account button pressed');
+  Future<void> _createAccount(BuildContext context) async {
+    try {
+      FirebaseAuth _auth = FirebaseAuth.instance;
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      print("Account created: ${userCredential.user?.email}");
 
-    // Simulating successful signup
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Account created successfully!'),
-      duration: Duration(seconds: 2),
-    ));
-
-    // Navigate back to the login page
-    Navigator.pop(context);
+      // Navigate back to the home page
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      print("Error: $e");
+    }
   }
 
   @override
@@ -102,41 +118,22 @@ class CreateAccountScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: nameController,
-              decoration: InputDecoration(labelText: 'Name'),
-            ),
-            SizedBox(height: 16.0),
-            TextField(
-              controller: emailController,
+              controller: _emailController,
               decoration: InputDecoration(labelText: 'Email'),
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 16),
             TextField(
-              controller: passwordController,
-              obscureText: true,
+              controller: _passwordController,
               decoration: InputDecoration(labelText: 'Password'),
+              obscureText: true,
             ),
-            SizedBox(height: 24.0),
+            SizedBox(height: 32),
             ElevatedButton(
-              onPressed: () => _handleCreateAccount(context),
+              onPressed: () => _createAccount(context),
               child: Text('Create Account'),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-      ),
-      body: Center(
-        child: Text('Welcome to the Home Screen!'),
       ),
     );
   }

@@ -1,3 +1,6 @@
+import 'package:final_barnyard_defenders/chris_work/pathing.dart';
+import 'package:final_barnyard_defenders/main_menu.dart';
+import 'package:final_barnyard_defenders/store_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -1,10 +1,12 @@
 import 'package:final_barnyard_defenders/barnyard_defenders_game.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:final_barnyard_defenders/chris_work/cards.dart';
 import 'package:final_barnyard_defenders/chris_work/pathing.dart';
 import 'package:final_barnyard_defenders/mohammad_work/login2.dart';
+import 'mohammad_work/firebase_options.dart';
 import 'store_page.dart';
 import 'main_menu.dart';
 import 'package:final_barnyard_defenders/omed_work/mainsettings.dart';
@@ -24,16 +26,17 @@ import 'game_page.dart';
 // this round
 // Since we only need dialog or pickers, no pickers, no seasons or night based on those
 
-void main() {
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Flame.device.fullScreen();
   Flame.device.setPortrait();
   BarnyardDefendersGame game = BarnyardDefendersGame();
-  // Why am i getting camera error
-  //runApp(GameWidget(game: game));
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -50,8 +53,8 @@ class MyApp extends StatelessWidget {
       home: const MainMenu(title: 'Barnyard Defenders'),
       routes: {
         '/store' : (context) => StorePage(title: 'Store'),
-        '/login' : (context) => LoginScreen(),
-        '/createAccount': (context) => CreateAccountScreen(),
+        '/login' : (context) => LoginPage(),
+        '/createAccount': (context) => CreateAccountPage(),
         '/settings': (context) => SettingsPage(),
         '/stats': (context) => StatsScreen(),
         //'/game': (context) => MovingDot(),
