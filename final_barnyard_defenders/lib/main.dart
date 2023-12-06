@@ -12,6 +12,7 @@ import 'main_menu.dart';
 import 'package:final_barnyard_defenders/omed_work/mainsettings.dart';
 import 'package:final_barnyard_defenders/omed_work/displaystats.dart';
 import 'game_page.dart';
+import 'package:final_barnyard_defenders/omed_work/displaystats.dart';
 
 // This function runs the whole app
 // Olly implemented navigation (except navigation within mohammads login)

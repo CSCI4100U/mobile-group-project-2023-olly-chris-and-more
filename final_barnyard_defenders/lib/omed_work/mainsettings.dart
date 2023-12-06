@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -14,11 +15,13 @@ class _SettingsPageState extends State<SettingsPage> {
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
+  AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
     _initializeNotifications();
+    _initializeAudioPlayer();
     _getUser();
   }
 
@@ -42,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
     AndroidNotificationDetails(
       'your_channel_id', // Change this to your channel ID
       'Your Channel Name', // Change this to your channel name
-     // Change this to your channel description
+      // Change this to your channel description
       importance: Importance.max,
       priority: Priority.high,
     );
@@ -76,6 +79,12 @@ class _SettingsPageState extends State<SettingsPage> {
         _user = userCredential.user;
       });
 
+      // Play background music
+      _audioPlayer.play('assets/music/Powerful-Trap-(chosic.com).mp3' as Source);
+
+
+
+
       // Show notification after successful login
       await _showNotification();
     } catch (e) {
@@ -90,9 +99,16 @@ class _SettingsPageState extends State<SettingsPage> {
       setState(() {
         _user = null;
       });
+
+      // Stop background music on logout
+      _audioPlayer.stop();
     } catch (e) {
       print("Error: $e");
     }
+  }
+
+  Future<void> _initializeAudioPlayer() async {
+    // Initialize audio player settings if needed
   }
 
   @override
@@ -101,16 +117,23 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: Text('Settings'),
       ),
-      body: ListView(
+      body: Column(
         children: <Widget>[
           ListTile(
             title: Text('Account'),
             leading: Icon(Icons.person),
             subtitle: _user != null
-                ? Text('Logged in as ${_user!.isAnonymous ? 'Guest' : _user!.email}')
+                ? Text(
+                'Logged in as ${_user!.isAnonymous ? 'Guest' : _user!.email}')
                 : null,
-            onTap: _user == null ? _signIn : _signOut,
+            onTap: _user == null ? _signIn : null,
           ),
+          if (_user != null)
+            ListTile(
+              title: Text('Logout'),
+              leading: Icon(Icons.exit_to_app),
+              onTap: _signOut,
+            ),
           ListTile(
             title: Text('Upgrades'),
             leading: Icon(Icons.upgrade),
@@ -133,7 +156,8 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
           ListTile(
-            title: Text('Settings', style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text('Settings',
+                style: TextStyle(fontWeight: FontWeight.bold)),
             leading: Icon(Icons.settings),
             onTap: () {
               // Navigate to shop page

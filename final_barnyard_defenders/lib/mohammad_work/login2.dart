@@ -4,9 +4,17 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'firebase_options.dart'; // Make sure to import your Firebase options file
 
-
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -41,15 +49,35 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  void _showErrorSnackBar(String errorMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(errorMessage),
+        duration: Duration(seconds: 2), // Adjust the duration as needed
+      ),
+    );
+  }
+
   Future<void> _signIn() async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
+
       print("Signed in: ${userCredential.user?.email}");
+
+      // Navigate to the main menu
+      Navigator.pushReplacementNamed(context, '/');
+
     } on FirebaseAuthException catch (e) {
-      print("Error: $e");
+      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
+        // Show error message using SnackBar
+        _showErrorSnackBar('Invalid email or password. Please try again.');
+      } else {
+        // For other errors, print the error to the console
+        print("Error: $e");
+      }
     }
   }
 
@@ -83,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               obscureText: true,
             ),
-            SizedBox(height: 32),
+            SizedBox(height: 8), // Added spacing
             ElevatedButton(
               onPressed: _signIn,
               child: Text('Sign In'),
@@ -106,6 +134,15 @@ class CreateAccountPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  void _showErrorSnackBar(BuildContext context, String errorMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(errorMessage),
+        duration: Duration(seconds: 2), // Adjust the duration as needed
+      ),
+    );
+  }
+
   Future<void> _createAccount(BuildContext context) async {
     try {
       FirebaseAuth _auth = FirebaseAuth.instance;
@@ -117,7 +154,8 @@ class CreateAccountPage extends StatelessWidget {
 
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
-      print("Error: $e");
+      // Show error message using SnackBar
+      _showErrorSnackBar(context, "Error creating account: ${e.message}");
     }
   }
 
@@ -151,7 +189,7 @@ class CreateAccountPage extends StatelessWidget {
               ),
               obscureText: true,
             ),
-            SizedBox(height: 32),
+            SizedBox(height: 8), // Added spacing
             ElevatedButton(
               onPressed: () => _createAccount(context),
               child: Text('Create Account'),
