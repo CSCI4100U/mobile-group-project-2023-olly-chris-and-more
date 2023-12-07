@@ -2,12 +2,18 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'barnyard_defenders_game.dart';
 
-class GamePage extends StatelessWidget {
-  const GamePage({Key? key});
+class GamePage extends StatefulWidget {
+  const GamePage({Key? key}) : super(key: key);
+
+  @override
+  _GamePageState createState() => _GamePageState();
+}
+
+class _GamePageState extends State<GamePage> {
+  bool isFirstClick = true;
 
   @override
   Widget build(BuildContext context) {
-    // Create an instance of BarnyardDefendersGame
     BarnyardDefendersGame game = BarnyardDefendersGame();
 
     return Scaffold(
@@ -23,8 +29,26 @@ class GamePage extends StatelessWidget {
             right: 20,
             child: ElevatedButton(
               onPressed: () {
-                // Call the startWave method when the button is pressed
+                // StartWave
                 game.startWave();
+                if (isFirstClick) {
+                  isFirstClick = false;
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        backgroundColor: Colors.black,
+                        content: Text(
+                          "The Game has Started",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24.0,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }
               },
               child: Text("Wave Start"),
             ),
