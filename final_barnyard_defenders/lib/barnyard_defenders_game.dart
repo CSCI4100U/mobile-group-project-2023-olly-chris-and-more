@@ -8,11 +8,12 @@ import 'package:final_barnyard_defenders/levels/level.dart';
 
 class BarnyardDefendersGame extends FlameGame{
 
-  @override
-  Color backgroundColor() => const Color(0xFF000000);
-
   late final CameraComponent cam;
   final world = Level();
+  bool waveStarted = false;
+
+  @override
+  Color backgroundColor() => const Color(0xFF000000);
 
   @override
   FutureOr<void> onLoad() async {
@@ -31,5 +32,16 @@ class BarnyardDefendersGame extends FlameGame{
     addAll([cam, world]);
 
     return super.onLoad();
+  }
+
+  void startWave() {
+    // Add your wave start logic here (like spawn enemies, timers, defense, idk) ///////////////////////
+    print("Wave started!");
+    // Set waveStarted to true
+    waveStarted = true;
+  }
+
+  bool isWaveStarted() {
+    return waveStarted;
   }
 }
