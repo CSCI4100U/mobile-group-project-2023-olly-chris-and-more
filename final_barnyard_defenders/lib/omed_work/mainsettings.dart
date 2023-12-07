@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:final_barnyard_defenders/store_page.dart';
+import 'package:final_barnyard_defenders/game_page.dart'; // Import the GamePage
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -12,9 +14,10 @@ class _SettingsPageState extends State<SettingsPage> {
   double _volume = 0.5;
   bool _notifications = true;
   User? _user; // Firebase user
+  bool _isNavigationExpanded = false;
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
   AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
@@ -27,10 +30,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _initializeNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('app_icon');
+        AndroidInitializationSettings('app_icon');
 
     final InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid);
+        InitializationSettings(android: initializationSettingsAndroid);
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
@@ -42,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _showNotification() async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
+        AndroidNotificationDetails(
       'your_channel_id', // Change this to your channel ID
       'Your Channel Name', // Change this to your channel name
       // Change this to your channel description
@@ -50,7 +53,7 @@ class _SettingsPageState extends State<SettingsPage> {
       priority: Priority.high,
     );
     const NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics);
+        NotificationDetails(android: androidPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.show(
       0,
@@ -74,16 +77,13 @@ class _SettingsPageState extends State<SettingsPage> {
       // Replace this with your specific authentication logic
       // For example, you can use signInWithEmailAndPassword, signInAnonymously, etc.
       UserCredential userCredential =
-      await FirebaseAuth.instance.signInAnonymously();
+          await FirebaseAuth.instance.signInAnonymously();
       setState(() {
         _user = userCredential.user;
       });
 
       // Play background music
       _audioPlayer.play('assets/music/Powerful-Trap-(chosic.com).mp3' as Source);
-
-
-
 
       // Show notification after successful login
       await _showNotification();
@@ -119,51 +119,17 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: Column(
         children: <Widget>[
+          _buildSectionOutline(),
           ListTile(
             title: Text('Account'),
             leading: Icon(Icons.person),
             subtitle: _user != null
                 ? Text(
-                'Logged in as ${_user!.isAnonymous ? 'Guest' : _user!.email}')
+                    'Logged in as ${_user!.isAnonymous ? 'Guest' : _user!.email}')
                 : null,
             onTap: _user == null ? _signIn : null,
           ),
-          if (_user != null)
-            ListTile(
-              title: Text('Logout'),
-              leading: Icon(Icons.exit_to_app),
-              onTap: _signOut,
-            ),
-          ListTile(
-            title: Text('Upgrades'),
-            leading: Icon(Icons.upgrade),
-            onTap: () {
-              // Navigate to upgrades page
-            },
-          ),
-          ListTile(
-            title: Text('Defend'),
-            leading: Icon(Icons.security),
-            onTap: () {
-              // Navigate to defend settings page
-            },
-          ),
-          ListTile(
-            title: Text('Shop'),
-            leading: Icon(Icons.shop),
-            onTap: () {
-              // Navigate to shop page
-            },
-          ),
-          ListTile(
-            title: Text('Settings',
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            leading: Icon(Icons.settings),
-            onTap: () {
-              // Navigate to shop page
-            },
-          ),
-          Divider(),
+          _buildSectionOutline(),
           ListTile(
             title: Text('Volume'),
             subtitle: Slider(
@@ -190,7 +156,60 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
           ),
+          _buildSectionOutline(),
+          ListTile(
+            title: Text('Navigation'),
+            leading: Icon(Icons.navigation),
+            onTap: () {
+              setState(() {
+                _isNavigationExpanded = !_isNavigationExpanded;
+              });
+            },
+          ),
+          if (_isNavigationExpanded) ...[
+            ListTile(
+              title: Text('Upgrades'),
+              leading: Icon(Icons.upgrade),
+              onTap: () {
+                // Navigate to the upgrades page
+              },
+            ),
+            ListTile(
+              title: Text('Defend'),
+              leading: Icon(Icons.security),
+              onTap: () {
+                // Navigate to the game page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GamePage()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Shop'),
+              leading: Icon(Icons.shop),
+              onTap: () {
+                // Navigate to the StorePage when Shop is tapped
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => StorePage(title: 'Store')),
+                );
+              },
+            ),
+          ],
         ],
+      ),
+    );
+  }
+
+  Widget _buildSectionOutline() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: Colors.black.withOpacity(0.2)),
+          bottom: BorderSide(color: Colors.black.withOpacity(0.2)),
+        ),
       ),
     );
   }
