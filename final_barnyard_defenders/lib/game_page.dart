@@ -12,6 +12,7 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   bool isFirstClick = true;
+  bool isGameOver = false;
 
   @override
   void initState() {
@@ -42,7 +43,7 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
                 double segmentDuration = 4.0; // Each segment duration
 
                 if (_controller.value < 0.25) {
-                  // Move right 150 
+                  // Move right 150
                   leftPosition = 1 + _controller.value * 600;
                   topPosition = 100;
                 } else if (_controller.value < 0.5) {
@@ -50,13 +51,34 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
                   leftPosition = 151;
                   topPosition = 100 + (_controller.value - 0.25) * 800;
                 } else if (_controller.value < 0.75) {
-                  // Move right 100 
+                  // Move right 100
                   leftPosition = 151 + (_controller.value - 0.5) * 430;
                   topPosition = 300;
                 } else {
-                  // Move down 400 
+                  // Move down 400
                   leftPosition = 281;
                   topPosition = 300 + (_controller.value - 0.75) * 1600;
+                }
+
+                if (topPosition > 600 && !isGameOver) {
+                  isGameOver = true; // Set flag to avoid showing the dialog multiple times
+                  Future.delayed(Duration.zero, () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          backgroundColor: Colors.red, 
+                          content: Text(
+                            "Game Over",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24.0,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  });
                 }
 
                 return Positioned(
