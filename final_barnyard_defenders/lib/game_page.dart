@@ -9,8 +9,18 @@ class GamePage extends StatefulWidget {
   _GamePageState createState() => _GamePageState();
 }
 
-class _GamePageState extends State<GamePage> {
+class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
   bool isFirstClick = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 16), // Total duration for the entire movement
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,17 +34,44 @@ class _GamePageState extends State<GamePage> {
         children: [
           GameWidget(game: game),
           if (!isFirstClick)
-            Positioned(
-              top: 100,
-              left: 1,
-              child: Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                ),
-              ),
+            AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) {
+                double leftPosition;
+                double topPosition;
+                double segmentDuration = 4.0; // Each segment duration
+
+                if (_controller.value < 0.25) {
+                  // Move right 150 
+                  leftPosition = 1 + _controller.value * 600;
+                  topPosition = 100;
+                } else if (_controller.value < 0.5) {
+                  // Move down 200
+                  leftPosition = 151;
+                  topPosition = 100 + (_controller.value - 0.25) * 800;
+                } else if (_controller.value < 0.75) {
+                  // Move right 100 
+                  leftPosition = 151 + (_controller.value - 0.5) * 430;
+                  topPosition = 300;
+                } else {
+                  // Move down 400 
+                  leftPosition = 281;
+                  topPosition = 300 + (_controller.value - 0.75) * 1600;
+                }
+
+                return Positioned(
+                  left: leftPosition,
+                  top: topPosition,
+                  child: Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              },
             ),
           // Wave Start button
           Positioned(
@@ -50,6 +87,7 @@ class _GamePageState extends State<GamePage> {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
+                      _controller.forward(); // Animation
                       return AlertDialog(
                         backgroundColor: Colors.black,
                         content: Text(
@@ -70,5 +108,11 @@ class _GamePageState extends State<GamePage> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
