@@ -23,16 +23,30 @@ class _GamePageState extends State<GamePage> {
       body: Stack(
         children: [
           GameWidget(game: game),
+          if (!isFirstClick)
+            Positioned(
+              top: 100,
+              left: 1,
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           // Wave Start button
           Positioned(
             bottom: 20,
             right: 20,
             child: ElevatedButton(
               onPressed: () {
-                // StartWave
                 game.startWave();
                 if (isFirstClick) {
-                  isFirstClick = false;
+                  setState(() {
+                    isFirstClick = false;
+                  });
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
